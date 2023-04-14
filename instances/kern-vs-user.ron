@@ -1,0 +1,10 @@
+#![enable(implicit_some)]
+(
+	dut_machines: ["rpi", "nuc"],
+	dplanes: [
+		(name: "kxdp", dplane: Trusded("../examples/01-macswap-xdp")),
+		(name: "uxdp", dplane: Trusded("../examples/05-upcall")),
+	],
+
+	prototype_path: "bases/base.ron",
+)

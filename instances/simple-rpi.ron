@@ -1,0 +1,13 @@
+#![enable(implicit_some)]
+(
+	cores: Fixed(1),
+	rate: Fixed(1.0),
+	upcall_percent: Fixed(0.5),
+	upcall_timeout: Fixed(1),
+	dut_machines: ["rpi"],
+	dplanes: [
+		(name: "kxdp", dplane: Trusded("../examples/01-macswap-xdp")),
+	],
+	iterations: 3,
+	pkt_size: Fixed(64)
+)

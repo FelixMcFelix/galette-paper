@@ -1,0 +1,31 @@
+# -- NF & Map definitions --
+[functions.access-control.maps]
+allow-list = { type = "lpm-trie", size = 65535 }
+
+[functions.weak-classifier]
+maps = { flow-state = "_" }
+
+[functions.dpi]
+maps = { flow-state = "_" }
+disable_xdp = true
+
+[maps.flow-state]
+type = "hash_map"
+size = 65535
+
+# -- Chain definition --
+[[links]]
+from = "rx"
+to = ["access-control"]
+
+[[links]]
+from = "access-control"
+to = ["tx", "weak-classifier"]
+
+[[links]]
+from = "weak-classifier"
+to = ["tx", "!dpi", "drop"]
+
+[[links]]
+from = "dpi"
+to = ["tx", "drop"]

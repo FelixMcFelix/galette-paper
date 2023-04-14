@@ -1,0 +1,17 @@
+\begin{tabular}{@{}ccS[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]@{}}
+\toprule\multicolumn{1}{c}{Dataplane} & \multicolumn{1}{c}{Ingest Rate (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{Throughput (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{CPU (\unit{\percent})} & \multicolumn{2}{c}{Power (\unit{\milli\watt})}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8} & & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll}\\ \midrule
+Pure XDP & 0.1 & 0.1 & 0.1 & 1.4\pm 1.1 & 25.9\pm 1.8 & 1709.9\pm 3.5 & 1955.7\pm 18.6\\
+ & 1 & 1.0 & 1.0 & 1.5\pm 0.9 & 26.1\pm 2.0 & 1702.7\pm 4.2 & 1860.7\pm 7.4\\
+ & 10 & 9.8 & 9.8 & 2.2\pm 2.3 & 27.4\pm 2.4 & 1711.5\pm 4.5 & 1955.6\pm 17.0\\
+ & 50 & 48.8 & 48.8 & 8.6\pm 5.1 & 34.6\pm 3.1 & 1791.8\pm 10.1 & 1975.4\pm 10.3\\
+\texttt{AF\_XDP} & 0.1 & 0.1 & 0.1 & 1.5\pm 1.3 & 25.9\pm 2.1 & 1703.3\pm 1.5 & 1855.9\pm 8.2\\
+ & 1 & 1.0 & 1.0 & 1.5\pm 1.0 & 26.1\pm 2.0 & 1703.6\pm 1.9 & 1868.9\pm 7.8\\
+ & 10 & 9.8 & 9.8 & 3.9\pm 2.4 & 27.5\pm 2.7 & 1740.9\pm 5.5 & 1874.7\pm 8.2\\
+ & 50 & 48.8 & 48.8 & 18.2\pm 4.0 & 34.2\pm 3.2 & 1799.4\pm 12.3 & 1984.5\pm 12.1\\
+\cmidrule(lr){1-8}\texttt{AF\_PACKET} & 0.1 & \multicolumn{1}{c}{---} & 0.1 & \multicolumn{1}{c}{---} & 26.1\pm 3.0 & \multicolumn{1}{c}{---} & 1860.6\pm 7.9\\
+ & 1 & \multicolumn{1}{c}{---} & 1.0 & \multicolumn{1}{c}{---} & 26.2\pm 2.5 & \multicolumn{1}{c}{---} & 1847.5\pm 6.7\\
+ & 10 & \multicolumn{1}{c}{---} & 9.8 & \multicolumn{1}{c}{---} & 30.0\pm 2.4 & \multicolumn{1}{c}{---} & 1888.3\pm 10.2\\
+ & 50 & \multicolumn{1}{c}{---} & 49.1 & \multicolumn{1}{c}{---} & 47.8\pm 2.4 & \multicolumn{1}{c}{---} & 2023.9\pm 15.0\\
+\bottomrule
+\end{tabular}

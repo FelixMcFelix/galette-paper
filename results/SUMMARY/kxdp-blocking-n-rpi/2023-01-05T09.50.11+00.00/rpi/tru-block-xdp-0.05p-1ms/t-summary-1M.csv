@@ -1,0 +1,2 @@
+cores,pkt_sz,target_rate,target_pps,rate_median,rate_mean,pps_median,pps_mean,rate_95ci,pps_95ci
+1,64,1,1953.125,0.93504,0.9355805252525253,1461.0,1461.646464646465,0.009425411317466105,14.837335194086156

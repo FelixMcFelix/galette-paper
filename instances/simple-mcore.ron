@@ -1,0 +1,8 @@
+#![enable(implicit_some)]
+(
+	cores: Fixed(2),
+	dplanes: [
+		(name: "block-user-100k", dplane: Trusded("../examples/07-compute-heavy-userland")),
+	],
+	prototype_path: "simple-nuc.ron",
+)

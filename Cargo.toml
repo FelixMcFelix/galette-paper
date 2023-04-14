@@ -1,0 +1,7 @@
+[workspace]
+members = [
+	"backend",
+	"config",
+	"device",
+	"runner",
+]

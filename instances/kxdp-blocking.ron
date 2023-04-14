@@ -1,0 +1,10 @@
+#![enable(implicit_some)]
+(
+	upcall_percent: List([0.01, 0.05, 0.1, 0.25, 0.5, 1.0]),
+	dut_machines: ["rpi", "nuc"],
+	dplanes: [
+		(name: "block-xdp", dplane: Trusded("../examples/08-compute-heavy-kernel")),
+	],
+
+	prototype_path: "bases/base.ron",
+)

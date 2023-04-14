@@ -1,0 +1,13 @@
+#![enable(implicit_some)]
+(
+	// cores: Range(start: 1, end: 8),
+	cores: RangeStride(start: 1, end: 8, stride: 1),
+
+	dut_machines: ["nuc"], // TEMP
+	dplanes: [
+		(name: "block-user-100k", dplane: Trusded("../examples/07-compute-heavy-userland")),
+		(name: "block-user-1ms", dplane: Trusded("../examples/09-userland-1ms-process")),
+	],
+
+	prototype_path: "kxdp-blocking-n-nuc.ron",
+)

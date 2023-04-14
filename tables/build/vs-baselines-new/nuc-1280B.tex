@@ -1,0 +1,29 @@
+\begin{tabular}{@{}ccS[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]@{}}
+\toprule\multicolumn{1}{c}{Dataplane} & \multicolumn{1}{c}{Ingest Rate (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{Throughput (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{CPU (\unit{\percent})}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6} & & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll}\\ \midrule
+Pure XDP & 0.1 & 0.1\pm 0.0 & 0.1\pm 0.1 & 0.5\pm 0.4 & 12.5\pm 0.2\\
+ & 1 & 1.0\pm 0.1 & 1.0\pm 0.1 & 0.5\pm 0.5 & 12.5\pm 0.3\\
+ & 10 & 9.9\pm 0.1 & 9.9\pm 0.0 & 0.5\pm 0.5 & 12.5\pm 0.3\\
+ & 50 & 49.6\pm 0.2 & 49.7\pm 0.0 & 0.6\pm 0.4 & 12.5\pm 0.3\\
+ & 100 & 99.3\pm 0.1 & 99.4\pm 0.1 & 0.4\pm 0.4 & 12.5\pm 0.3\\
+ & 1000 & 969.3\pm 0.1 & 969.3\pm 0.1 & 0.6\pm 0.5 & 12.7\pm 0.3\\
+\texttt{AF\_XDP} & 0.1 & 0.1\pm 0.0 & 0.1\pm 0.0 & 0.4\pm 0.3 & 12.5\pm 0.3\\
+ & 1 & 1.0\pm 0.0 & 1.0\pm 0.1 & 0.4\pm 0.4 & 12.5\pm 0.3\\
+ & 10 & 9.9\pm 0.1 & 9.9\pm 0.0 & 0.4\pm 0.4 & 12.5\pm 0.2\\
+ & 50 & 49.7\pm 0.0 & 49.7\pm 0.0 & 0.9\pm 0.4 & 12.5\pm 0.3\\
+ & 100 & 99.4\pm 0.1 & 99.4\pm 0.1 & 1.1\pm 0.4 & 12.5\pm 0.3\\
+ & 1000 & 969.4\pm 0.1 & 969.3\pm 0.1 & 4.2\pm 0.4 & 12.7\pm 0.3\\
+\cmidrule(lr){1-6}\texttt{AF\_PACKET} & 0.1 & \multicolumn{1}{c}{---} & 0.1\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 1 & \multicolumn{1}{c}{---} & 1.0\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 10 & \multicolumn{1}{c}{---} & 9.9\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.2\\
+ & 50 & \multicolumn{1}{c}{---} & 49.7\pm 0.1 & \multicolumn{1}{c}{---} & 12.6\pm 0.3\\
+ & 100 & \multicolumn{1}{c}{---} & 99.4\pm 0.1 & \multicolumn{1}{c}{---} & 12.8\pm 0.3\\
+ & 1000 & \multicolumn{1}{c}{---} & 969.4\pm 0.1 & \multicolumn{1}{c}{---} & 14.0\pm 0.4\\
+DPDK & 0.1 & \multicolumn{1}{c}{---} & 0.1\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 1 & \multicolumn{1}{c}{---} & 1.0\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 10 & \multicolumn{1}{c}{---} & 9.9\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 50 & \multicolumn{1}{c}{---} & 49.7\pm 0.0 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 100 & \multicolumn{1}{c}{---} & 99.4\pm 0.1 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+ & 1000 & \multicolumn{1}{c}{---} & 969.3\pm 0.1 & \multicolumn{1}{c}{---} & 12.5\pm 0.1\\
+\bottomrule
+\end{tabular}

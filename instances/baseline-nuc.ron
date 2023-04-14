@@ -1,0 +1,11 @@
+#![enable(implicit_some)]
+(
+	dut_machines: ["nuc"],
+	dplanes: [
+		(name: "afp", dplane: TestpmdAfPacket),
+		(name: "dpdk", dplane: TestpmdDpdk),
+	],
+	rate: List([0.1, 0.5, 1.0, 10.0, 50.0, 100.0, 1000.0]),
+
+	prototype_path: "bases/base-full.ron",
+)

@@ -1,0 +1,20 @@
+\begin{tabular}{@{}ccS[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]@{}}
+\toprule\multicolumn{1}{c}{Dataplane} & \multicolumn{1}{c}{Ingest Rate (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{Throughput (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{CPU (\unit{\percent})} & \multicolumn{2}{c}{Power (\unit{\milli\watt})}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8} & & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll}\\ \midrule
+Pure XDP & 0.1 & 0.1\pm 0.0 & 0.1\pm 0.0 & 1.7\pm 2.1 & 25.5\pm 1.2 & 1673.3\pm 2.6 & 2244.6\pm 10.7\\
+ & 1 & 0.9\pm 0.0 & 0.9\pm 0.0 & 2.6\pm 2.7 & 26.5\pm 3.2 & 1666.3\pm 2.8 & 2094.3\pm 11.4\\
+ & 10 & 8.6\pm 0.0 & 8.6\pm 0.0 & 12.7\pm 7.2 & 34.6\pm 2.3 & 1742.0\pm 4.4 & 2172.0\pm 8.8\\
+ & 50 & 8.9\pm 0.3 & 9.7\pm 0.7 & 38.9\pm 5.8 & 55.7\pm 16.9 & 1835.9\pm 8.6 & 2257.3\pm 9.1\\
+ & 100 & 3.3\pm 0.2 & 4.6\pm 2.1 & 50.9\pm 7.6 & 55.4\pm 22.3 & 1879.6\pm 10.3 & 2248.4\pm 11.5\\
+\texttt{AF\_XDP} & 0.1 & 0.1\pm 0.0 & 0.1\pm 0.0 & 1.8\pm 1.9 & 25.4\pm 1.0 & 1692.5\pm 2.1 & 2323.4\pm 9.9\\
+ & 1 & 0.9\pm 0.0 & 0.9\pm 0.0 & 3.0\pm 3.0 & 26.2\pm 3.4 & 1677.6\pm 2.9 & 2215.9\pm 10.5\\
+ & 10 & 8.7\pm 0.0 & 8.7\pm 0.0 & 19.3\pm 3.8 & 33.4\pm 3.8 & 1767.7\pm 5.6 & 2202.6\pm 8.8\\
+ & 50 & 10.4\pm 0.3 & 12.0\pm 0.5 & 53.2\pm 3.7 & 62.5\pm 7.3 & 1868.3\pm 10.3 & 2308.1\pm 8.6\\
+ & 100 & 2.7\pm 4.4 & 6.1\pm 0.9 & 46.8\pm 10.1 & 63.0\pm 19.1 & 1846.3\pm 9.7 & 2317.1\pm 11.8\\
+\cmidrule(lr){1-8}\texttt{AF\_PACKET} & 0.1 & \multicolumn{1}{c}{---} & 0.1\pm 0.0 & \multicolumn{1}{c}{---} & 54.6\pm 13.1 & \multicolumn{1}{c}{---} & 2084.2\pm 4.8\\
+ & 1 & \multicolumn{1}{c}{---} & 0.9\pm 0.0 & \multicolumn{1}{c}{---} & 54.3\pm 6.9 & \multicolumn{1}{c}{---} & 2072.4\pm 3.5\\
+ & 10 & \multicolumn{1}{c}{---} & 8.7\pm 0.0 & \multicolumn{1}{c}{---} & 67.1\pm 10.8 & \multicolumn{1}{c}{---} & 2152.3\pm 6.6\\
+ & 50 & \multicolumn{1}{c}{---} & 6.4\pm 0.9 & \multicolumn{1}{c}{---} & 83.3\pm 10.2 & \multicolumn{1}{c}{---} & 2199.8\pm 7.7\\
+ & 100 & \multicolumn{1}{c}{---} & 2.5\pm 2.5 & \multicolumn{1}{c}{---} & 83.4\pm 19.8 & \multicolumn{1}{c}{---} & 2182.6\pm 8.8\\
+\bottomrule
+\end{tabular}

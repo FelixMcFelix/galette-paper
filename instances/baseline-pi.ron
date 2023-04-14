@@ -1,0 +1,9 @@
+#![enable(implicit_some)]
+(
+	dut_machines: ["rpi"],
+	dplanes: [
+		(name: "afp", dplane: TestpmdAfPacket),
+	],
+
+	prototype_path: "bases/base-full.ron",
+)

@@ -1,0 +1,6 @@
+#![enable(implicit_some)]
+(
+	dut_machines: ["nuc"],
+
+	prototype_path: "simple-rpi.ron",
+)

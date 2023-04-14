@@ -1,0 +1,2 @@
+cores,pkt_sz,mwatt_mean,mwatt_stdev,mwatt_95ci,mwatt_median
+1,64,1768.2622222222221,152.9074306586089,5.782256030202234,1701.0

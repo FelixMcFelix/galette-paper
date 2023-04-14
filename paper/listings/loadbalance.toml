@@ -1,0 +1,18 @@
+[functions.load-balance]
+
+[functions.load-balance.maps]
+upcall_likelihood = { type = "array", size = 1 }
+
+[functions.compute-light]
+
+[[links]]
+from = "rx"
+to = ["load-balance"]
+
+[[links]]
+from = "load-balance"
+to = ["compute-light", "!compute-light"]
+
+[[links]]
+from = "compute-light"
+to = ["tx"]

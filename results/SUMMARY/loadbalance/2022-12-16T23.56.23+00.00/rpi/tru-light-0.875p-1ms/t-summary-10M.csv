@@ -1,0 +1,5 @@
+cores,pkt_sz,target_rate,target_pps,rate_median,rate_mean,pps_median,pps_mean,rate_95ci,pps_95ci
+7,64,10,19531.25,8.217987636363636,8.217987636363636,12840.454545454546,12840.454545454546,0.08149381818181922,127.63636363636397
+7,256,10,4882.8125,nan,nan,nan,nan,nan,nan
+7,512,10,2441.40625,nan,nan,nan,nan,nan,nan
+7,1518,10,823.4519104084321,nan,nan,nan,nan,nan,nan

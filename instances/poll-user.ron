@@ -1,0 +1,11 @@
+#![enable(implicit_some)]
+(
+	upcall_timeout: Fixed(0),
+	dut_machines: ["rpi", "nuc"],
+	dplanes: [
+		(name: "uxdp", dplane: Trusded("../examples/05-upcall")),
+		(name: "kxdp", dplane: Trusded("../examples/01-macswap-xdp")),
+	],
+
+	prototype_path: "bases/base.ron",
+)

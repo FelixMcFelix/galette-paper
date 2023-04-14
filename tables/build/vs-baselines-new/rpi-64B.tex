@@ -1,0 +1,20 @@
+\begin{tabular}{@{}ccS[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]S[table-format=2.1(3)]@{}}
+\toprule\multicolumn{1}{c}{Dataplane} & \multicolumn{1}{c}{Ingest Rate (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{Throughput (\unit{\mega\bit\per\second})} & \multicolumn{2}{c}{CPU (\unit{\percent})} & \multicolumn{2}{c}{Power (\unit{\milli\watt})}\\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8} & & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll} & \multicolumn{1}{c}{IRQ} & \multicolumn{1}{c}{Poll}\\ \midrule
+Pure XDP & 0.1 & 0.1\pm 0.0 & 0.1\pm 0.0 & 1.8\pm 2.4 & 25.6\pm 1.3 & 1675.7\pm 2.3 & 2230.3\pm 10.4\\
+ & 1 & 0.9\pm 0.0 & 0.9\pm 0.0 & 3.0\pm 3.9 & 26.6\pm 1.6 & 1664.3\pm 3.0 & 2097.0\pm 10.4\\
+ & 10 & 9.4\pm 0.0 & 9.4\pm 0.0 & 20.0\pm 6.1 & 41.3\pm 5.3 & 1802.8\pm 7.5 & 2186.3\pm 8.5\\
+ & 50 & 2.9\pm 0.3 & 3.9\pm 2.2 & 40.0\pm 4.2 & 52.8\pm 22.1 & 1826.5\pm 8.5 & 2227.1\pm 10.0\\
+ & 100 & 1.5\pm 0.1 & 1.9\pm 0.5 & 47.0\pm 7.4 & 62.9\pm 15.7 & 1839.3\pm 9.3 & 2252.6\pm 10.8\\
+\texttt{AF\_XDP} & 0.1 & 0.1\pm 0.0 & 0.1\pm 0.0 & 2.1\pm 2.5 & 25.4\pm 1.0 & 1695.7\pm 2.9 & 2321.3\pm 8.1\\
+ & 1 & 1.0\pm 0.0 & 1.0\pm 0.0 & 3.9\pm 2.6 & 26.4\pm 1.7 & 1702.5\pm 2.9 & 2197.2\pm 10.3\\
+ & 10 & 9.5\pm 0.0 & 9.5\pm 0.0 & 35.6\pm 5.7 & 38.6\pm 9.6 & 1852.2\pm 9.4 & 2298.8\pm 10.6\\
+ & 50 & 3.7\pm 0.2 & 5.2\pm 1.6 & 46.9\pm 4.6 & 62.1\pm 4.7 & 1844.3\pm 9.4 & 2286.3\pm 12.3\\
+ & 100 & 1.6\pm 1.7 & 2.5\pm 1.9 & 45.3\pm 7.1 & 61.4\pm 17.3 & 1841.4\pm 9.0 & 2303.6\pm 11.4\\
+\cmidrule(lr){1-8}\texttt{AF\_PACKET} & 0.1 & \multicolumn{1}{c}{---} & 0.1\pm 0.0 & \multicolumn{1}{c}{---} & 64.4\pm 34.2 & \multicolumn{1}{c}{---} & 2107.5\pm 4.5\\
+ & 1 & \multicolumn{1}{c}{---} & 1.0\pm 0.0 & \multicolumn{1}{c}{---} & 54.7\pm 7.5 & \multicolumn{1}{c}{---} & 2068.2\pm 3.6\\
+ & 10 & \multicolumn{1}{c}{---} & 9.5\pm 0.0 & \multicolumn{1}{c}{---} & 75.9\pm 8.6 & \multicolumn{1}{c}{---} & 2198.6\pm 7.7\\
+ & 50 & \multicolumn{1}{c}{---} & 3.4\pm 0.6 & \multicolumn{1}{c}{---} & 84.4\pm 8.1 & \multicolumn{1}{c}{---} & 2192.5\pm 7.0\\
+ & 100 & \multicolumn{1}{c}{---} & 1.3\pm 1.3 & \multicolumn{1}{c}{---} & 80.0\pm 19.6 & \multicolumn{1}{c}{---} & 2177.4\pm 7.1\\
+\bottomrule
+\end{tabular}

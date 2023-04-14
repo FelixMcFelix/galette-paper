@@ -1,0 +1,24 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1"
+flume = "0.10"
+futures-util = "0.3.25"
+postcard = { version = "1", features = ["alloc", "use-std"] }
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+tokio = { version = "1", features = ["fs", "macros", "net"] }
+tokio-rustls = "0.23"
+tokio-serial = { optional = true, version = "5" }
+tokio-tungstenite = { version = "0.17", features = ["rustls-tls-webpki-roots"] }
+uuid = { version = "1", features = ["v4"] }
+
+[features]
+default = ["bt"]
+
+bt = ["dep:tokio-serial"]

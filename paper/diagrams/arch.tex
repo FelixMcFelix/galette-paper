@@ -1,0 +1,266 @@
+\tikzset{
+	crate/.style n args={2}{%
+		append after command={\pgfextra{\let\mainnode=\tikzlastnode}
+			node[above] (cc) at (\mainnode.north) {\includegraphics[keepaspectratio,width=1cm]{images/cargo}}%
+			node at (cc.south) {#1}%
+			node at (cc.west) {#2}%
+		},
+	}
+}
+
+\tikzset{
+	file/.style n args={1}{%
+		append after command={\pgfextra{\let\mainnode=\tikzlastnode}
+			node[above] (cc) at (\mainnode.north) {\Huge\faFile*[regular]}%
+			node[fill=white] at ($(cc.south) - (0,0.1)$) {\texttt{#1}}%
+		},
+	}
+}
+
+\tikzset{
+	compile-both/.style n args={1}{%
+		append after command={\pgfextra{\let\mainnode=\tikzlastnode}
+			node[circle, draw, above left, fill=white] (cc) at (\mainnode) {\faMicrochip{}}%
+			node[circle, draw, fill=white, inner sep=0pt,
+			text width=7mm,align=center] at (\mainnode) {\includegraphics[keepaspectratio,width=0.45cm]{images/ebpf}}%
+			node[left] at (cc.west) {#1}%
+		},
+	}
+}
+
+\tikzset{
+	compile/.style n args={1}{%
+		append after command={\pgfextra{\let\mainnode=\tikzlastnode}
+			node[circle, draw, above left, fill=white] (cc) at (\mainnode) {\faMicrochip{}}%
+			node[left] at (cc.west) {#1}%
+		},
+	}
+}
+
+\tikzset{
+	graphnode/.style={%
+		fill=white,%
+		circle,%
+		draw,%
+		text width=2mm,%
+		align=center,%
+		text=black%
+	}
+}
+
+\tikzset{
+	old inner xsep/.estore in=\oldinnerxsep,
+	old inner ysep/.estore in=\oldinnerysep,
+	double circle/.style 2 args={
+		circle,
+		old inner xsep=\pgfkeysvalueof{/pgf/inner xsep},
+		old inner ysep=\pgfkeysvalueof{/pgf/inner ysep},
+		/pgf/inner xsep=\oldinnerxsep+#1,
+		/pgf/inner ysep=\oldinnerysep+#1,
+		alias=sourcenode,
+		append after command={
+			let     \p1 = (sourcenode.center),
+			\p2 = (sourcenode.east),
+			\n1 = {\x2-\x1-#1-0.5*\pgflinewidth}
+			in
+			node [inner sep=0pt, draw, circle, minimum width=2*\n1,at=(\p1),#2] {}
+		}
+	},
+	double circle/.default={2pt}{blue}
+}
+
+\tikzset{
+	graphnode-terminal/.style n args={1}{%
+		fill={#1},%
+		double circle={-2pt}{#1},%
+		circle,%
+		draw,%
+%		text width=2mm,%
+		align=center,%
+		text=white%
+	},
+	graphnode-terminal/.default={black}
+}
+
+\tikzset{
+	nicebox/.style={draw,rounded corners,color=uofgsandstone,fill=uofgsandstone!10,dashed},
+	gpath/.style={color=uofgheather,thick},
+	usepath/.style={color=uofgmocha,thick},
+	daemonbox/.style={draw, rounded corners, fill=white,align=center,},
+	authbox/.style={draw, rounded corners, fill=uofgpumpkin!30, align=center,},
+	client-authbox/.style={authbox,minimum width=1.8cm,rotate=90},
+	authflow/.style={color=uofgthistle,thick},
+	normflow/.style={color=uofgpillarbox,thick,dash dot},
+}
+
+\tikzset{
+	map-cyl/.style n args={1}{%
+		cylinder, shape border rotate=90, draw,align=center,aspect=0.1,font={\small},%
+		cylinder uses custom fill, cylinder end fill=#1!50, cylinder body fill = #1!10
+	},
+	map-cyl/.default={uofgsandstone}
+}
+
+\begin{tikzpicture}
+	\draw[nicebox] (0.45,-1.35) rectangle ++(3.5,2.7);
+	\draw[nicebox] (-3.8,-1.4) rectangle ++(3.1,2.75);
+	\node (compiler-infra) {
+		\begin{tikzpicture}
+			\node[crate={ACL} {a)}] (acl-crate) {};
+			\node[crate={Rate Check} {b)}] at (1.5,0) (rate-crate) {};
+			\node[crate={\faLock{} DPI} {c)}] at (0, -1.5) (dpi-crate) {};
+			\node[crate={Stats} {d)}] at (1.5,-1.5) (stats-crate) {};
+			
+			\node[draw, rounded corners, rotate=90] at (2.9,-0.25) (compiler) {\texttt{rustc} \& RedBPF};
+			
+			\draw[->,normflow] ($(compiler.north west) - (0.3,-0.3)$) -- ($(compiler.north west) - (0,-0.3)$);
+			\draw[->,normflow] ($(compiler.north east) - (0.3,0.3)$) -- ($(compiler.north east) - (0,0.3)$);
+			\draw[->,normflow] ($(compiler.south west) - (0,-0.3)$) -- ($(compiler.south west) + (0.3,0.3)$);
+			\draw[->,normflow] ($(compiler.south east) - (0,0.3)$) -- ($(compiler.south east) + (0.3,-0.3)$);
+			
+			\node[compile-both={a)}] (acl-comp) at ($(acl-crate) + (4.75,0.4)$) {};
+			\node[compile-both={b)}] (rate-comp) at ($(acl-comp) + (1.75,0)$) {};
+			\node[compile={c)}] (dpi-comp) at ($(acl-comp) + (0,-1.5)$) {};
+			\node[compile-both={d)}] (stats-comp) at ($(dpi-comp) + (1.75,0)$) {};
+		\end{tikzpicture}
+	};
+
+	\node (chain) at ($(compiler-infra) + (-0.68, -2.7)$) {
+		\begin{tikzpicture}
+			\node[nicebox] (chainbox) {
+				\begin{tikzpicture}
+					\node[graphnode-terminal=uofgheather] (rx) {\textsc{Rx}};
+					\node[graphnode] (a-node) at ($(rx) + (0,-1)$) {a};
+					\node[graphnode] (b-node) at ($(a-node) + (1,0)$) {b};
+					\node[graphnode] (c-node) at ($(b-node) + (1,0)$) {c};
+					\node[graphnode] (d-node) at ($(b-node) + (0.5,1)$) {d};
+					
+					\node[graphnode-terminal=uofgpillarbox] (drop) at ($(b-node) + (2,0)$) {\textsc{Drop}};
+					\node[graphnode-terminal=uofgcobalt] (tx) at ($(d-node) + (1,0)$) {\textsc{Tx}};
+					
+					\draw[->, gpath] (rx) -- (a-node);
+					
+					\draw[->, gpath] (a-node) -- (b-node);
+					\draw[->, gpath] (a-node) to[out=-30, in=210] (drop);
+					
+					\draw[->, gpath] (b-node) -- (c-node);
+					\draw[->, gpath] (b-node) -- (d-node);
+					
+					\draw[->, gpath] (c-node) -- (d-node);
+					\draw[->, gpath] (c-node) -- (drop);
+					
+					\draw[->, gpath] (d-node) -- (tx);
+				\end{tikzpicture}
+			};
+		
+		\node[file={chain.toml}] (toml) at (3.2,-0.5) {};
+		
+		\draw[dotted, color=uofgsandstone] (chainbox.north east) -- ($(toml.west) + (-0.2,1.1)$);
+		\draw[dotted, color=uofgsandstone] (chainbox.south east) -- ($(toml.west) + (-0.2,0.2)$);
+		\end{tikzpicture}
+	};
+
+	\node[authbox,minimum height=1cm] at ($(chain) + (6,-0.5)$) (falcon-server) {Falcon\\Keys};
+	\node[authbox,minimum height=1cm] at ($(falcon-server) + (1.4,0)$) (crp-server) {CRP\\Database};
+	
+	\node[daemonbox] at ($(compiler-infra) + (6,-0.5)$) (daemon-server) {Compiler\\Daemon\\(TEE Server)};
+	
+	% ------------------
+	
+%	\node (xdp-chain) at ($(daemon-client) + (4, -1.4)$) {
+	\node (xdp-chain) at (16, -1.3) {
+		\begin{tikzpicture}
+			\draw[draw=black, fill=white, rounded corners] (0.3,0.3) rectangle ++(3,0.8);
+			\draw[draw=black, fill=white, rounded corners] (0.15,0.15) rectangle ++(3,0.8);
+			\draw[draw=black, fill=white, rounded corners] (0,0) rectangle ++(3,0.8);
+			
+			\node[graphnode] (c-node') at (0.5,0.4) {c};
+			\node[graphnode] (d-node') at ($(c-node') + (1,0)$) {d};
+			\node[graphnode-terminal=uofgpillarbox] (drop') at ($(d-node') + (1,0)$) {D};
+			
+			\node[graphnode] (a-node) at (0.15,-2) {a};
+			\node[graphnode] (b-node) at ($(a-node) + (1,0)$) {b};
+			\node[graphnode] (d-node) at ($(b-node) + (1,0)$) {d};
+			
+			\node[graphnode-terminal=uofgheather] (rx) at (0,-3.5) {\textsc{Rx}};
+			\node[graphnode-terminal=uofgpillarbox] (drop) at ($(rx) + (1.5,0)$) {D};
+			\node[graphnode-terminal=uofgcobalt] (tx) at ($(rx) + (3,0)$) {\textsc{Tx}};
+			
+			\node (hwt) at ($(tx) + (1,0)$) {\textsc{Hw}};
+			\node[align=center] (xdpt) at ($(d-node) + (1.85,0)$) {\textsc{XDP Fast}\\\textsc{Path} \includegraphics[keepaspectratio,width=1em]{images/ebpf}};
+			\node[align=center] (usrt) at ($(drop') + (1.5,0)$) {\textsc{User} \faMicrochip \\(\textsc{AArch64})};
+			
+			\draw[dashed, color=uofgsandstone] (-0.5,-1) -- (4.25,-1);
+			\draw[dashed, color=uofgsandstone] (-2.25,-2.75) -- (4.25,-2.75);
+			
+			\draw[dashed, color=uofgsandstone] (-0.5,-2.75) -- (-0.5,1);
+			\draw[dashed, color=uofgsandstone] (-2.25,-2.75) -- (-2.25,-3.9);
+			
+			\node[draw,fill=uofgsandstone!10,rounded corners,align=center] (maps) at (1.5,-1) {BPF Maps\\(State)};
+			
+			\node[authbox] (puf) at ($(rx) - (1.25,0)$) {PUF\\Circuit};
+			
+			\draw[->, gpath] (rx) -- (a-node);
+			
+			\draw[->, gpath] (a-node) -- (b-node);
+			\draw[->, gpath] (a-node) -- (drop);
+			
+			\draw[->, gpath, dashed] (b-node) to[in=-120, out=150] (c-node');
+			\draw[->, gpath] (b-node) -- (d-node);
+			
+			\draw[->, gpath] (c-node') -- (d-node');
+			\draw[->, gpath] (c-node') to[in=150, out=30] (drop');
+			
+			\draw[->, gpath] (d-node) -- (tx);
+			\draw[->, gpath, dashed] (d-node') to[out=-30, in=90] (tx);
+			
+			\node[gpath, font={\small}] at ($(b-node) + (-1.2,0.5)$) {\texttt{AF\_XDP}};
+			\node[gpath, font={\small}] at ($(drop') + (0.8,-1)$) {\texttt{AF\_XDP}};
+			
+			\draw[->, usepath] ($(maps.north) + (0, 0.4)$) -- ($(maps.north)$);
+			\draw[->, usepath] ($(maps.north) + (-0.5, 0.2)$) -- ($(maps.north) - (0.2,0)$);
+			\draw[->, usepath] ($(maps.north) + (0.5, 0.2)$) -- ($(maps.north) + (0.2,0)$);
+			
+			\draw[->, usepath] ($(maps.south) + (0, -0.4)$) -- ($(maps.south)$);
+			\draw[->, usepath] ($(maps.south) + (-0.5, -0.2)$) -- ($(maps.south) - (0.2,0)$);
+			\draw[->, usepath] ($(maps.south) + (0.5, -0.2)$) -- ($(maps.south) + (0.2,0)$);
+		\end{tikzpicture}
+	};
+
+	\node[daemonbox] at ($(xdp-chain) - (5.2,-0.8)$) (daemon-client) {SFC Daemon\\(SBC Device)};
+
+	\node (progs-map) [map-cyl] at ($(xdp-chain) + (-3,-0.5)$) {\includegraphics[keepaspectratio,width=0.75em]{images/ebpf} eBPF Prog\\Array Map};
+	\node[color=uofgpillarbox] at ($(progs-map) + (1,0)$) {\Huge \textbf{\{}};
+	\node (fns-map) [map-cyl] at ($(xdp-chain) + (-3,1.75)$) {\faMicrochip{} Function\\Trampolines};
+	\node[color=uofgpillarbox] at ($(fns-map) + (1,0)$) {\Huge \textbf{\{}};
+	
+	\node[client-authbox, dashed] (client-falcon1) at ($(xdp-chain) - (5.7,1.6)$) {Server\\PubKey};
+	\node[client-authbox] (client-falcon2) at ($(client-falcon1) + (0.8,0)$) {Local Keys};
+	\node[client-authbox] (client-kmod) at ($(client-falcon2) + (0.55,0)$) {kmod};
+	
+	\node[rotate=90,align=center] (priv) at ($(client-falcon1) - (1.8,0)$) {\textsc{Privileged}\\\textsc{Userspace}};
+	\node[rotate=90,align=center] (tee) at ($(priv) - (0.75,0)$) {\textsc{TEE Server}};
+	
+	% --- dividing lines
+	\draw[color=uofgsandstone!50, dashed, thick] (8,1) -- (8,-3.75);
+	
+	% --- auth flow
+	\draw[->, authflow] ([yshift=0.1cm]daemon-client.west) -- ([yshift=0.1cm]daemon-server.east) node[above,pos=0.5] {1) Auth Request};
+	\draw[<->, authflow] (daemon-server) -- (crp-server) node[right,pos=0.5,align=center] {2) Get\\CRP};
+	\draw[<->, authflow] (daemon-server) -- (falcon-server) node[left,pos=0.5,align=center] {3) Sign\\CRP};
+	\draw[<-, authflow] ([yshift=-0.1cm]daemon-client.west) -- ([yshift=-0.1cm]daemon-server.east) node[below,pos=0.5,align=center] {4) Key, Signed\\CRP};
+	\draw[<->, authflow] (daemon-client) -- (client-kmod.east) node[right,pos=0.4,align=center,xshift=-0.2cm,font={\small},yshift=0.07cm] {5) Verify\\CRP};
+	\draw[<->, authflow] (daemon-client) -- (client-falcon1) node[left,pos=0.5,align=center] {6) Attested\\Key};
+	
+	\node (puf) at ($(client-kmod) + (1.3,-0.3)$) {};
+	\draw[->, authflow] (client-kmod.south) -- (puf.west) node[above,pos=0.4] {C};
+	\draw[<-, authflow] ([yshift=-0.2 cm]client-kmod.south) -- ([yshift=-0.2 cm]puf.west) node[below,pos=0.4] {R};
+	
+	% --- NF flow
+	\draw[->, normflow] ([yshift=0.9cm]compiler-infra.east) to[out=-20,in=160] node[midway, above, xshift=0.6cm,yshift=0.5cm] {NF Binaries} (daemon-server.west);
+	\draw[->, normflow] (chain.east) to[out=15,in=200] node[pos=0.3, below,yshift=-0.6cm,xshift=0cm] {NF Config} (daemon-server.west);
+	\draw[<->, normflow] (daemon-server.north) to[out=20,in=160] node[midway, above, fill=white,yshift=0.1cm] {NFs, Queries, Stats} (daemon-client.north);
+	\draw[->, normflow] (daemon-client.east) to[out=0,in=90] (progs-map.north);
+	\draw[->, normflow] (daemon-client.east) to[out=0,in=-90] (fns-map.south);
+	\node[normflow,align=center,font=\small,yshift=-0.1cm] at ($(daemon-client.east) + (1.6,0)$) {Code,\\State};
+\end{tikzpicture}

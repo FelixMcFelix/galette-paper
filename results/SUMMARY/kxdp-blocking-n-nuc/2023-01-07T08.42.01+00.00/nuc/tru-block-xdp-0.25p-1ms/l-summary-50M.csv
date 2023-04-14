@@ -1,0 +1,2 @@
+cores,pkt_sz,lat_mean,lat_min,lat_10th,lat_25th,lat_median,lat_75th,lat_90th,lat_99th,lat_max
+1,64,508291.0806348093,32157.0,192791.5,287496.0,442432.0,608601.75,750125.5,1004688.3,16100586.0

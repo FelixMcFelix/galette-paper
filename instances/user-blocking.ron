@@ -1,0 +1,17 @@
+#![enable(implicit_some)]
+(
+	// cores: Range(start: 1, end: 8),
+	cores: RangeStride(start: 1, end: 7, stride: 2),
+
+	// TEMP: Need fast results.
+	pkt_size: List([64, 256, 512, 1518]),
+	rate: List([0.1, 1.0, 10.0, 100.0]),
+
+	dut_machines: ["nuc", "rpi"], // TEMP
+	dplanes: [
+		(name: "block-user-100k", dplane: Trusded("../examples/07-compute-heavy-userland")),
+		(name: "block-user-1ms", dplane: Trusded("../examples/09-userland-1ms-process")),
+	],
+
+	prototype_path: "kxdp-blocking.ron",
+)
