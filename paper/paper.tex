@@ -810,7 +810,7 @@ While both \ourtech{} and Polycube rely on chains of tail-calls between XDP prog
 If userland processing is required, Polycube upcalls packets using per-CPU ring buffers, and then \emph{recirculates packets back to the XDP datapath} using tap devices.
 \ourtech{} is instead tailored towards SBC devices.
 We use \afxdp{} for upcalling due to its ubiquity and robustness---and never return packets to XDP due to the single XDP thread offered by SBC hardware.
-Both frameworks specialised toward their target environment (datacentres vs.\ SBCs).
+Both frameworks are specialised toward their target environment (datacentres vs.\ SBCs).
 
 \emph{Morpheus}~\parencite{DBLP:conf/asplos/MianoSRRA22} examines how runtime profiling can improve the performance of eBPF-based dataplanes via \emph{profile guided optimisation}.
 While the improvements it offers would complement our work, this relies on routinely sending instrumentation data back to \ourtech{}'s compile server---and so would require more in-depth cost/benefit analysis of network overheads.
