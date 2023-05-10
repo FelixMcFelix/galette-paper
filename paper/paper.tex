@@ -129,6 +129,9 @@ Contextuals={Alternate}
 ]{Fira Mono}
 
 \usepackage{fontawesome5}
+\usepackage[absolute]{textpos}
+
+\usepackage{stackengine}
 
 \usepackage[newfloat]{minted}
 \usemintedstyle{tango}
@@ -146,6 +149,8 @@ Contextuals={Alternate}
 \newcommand{\mytitle}{\ourtech:~a~Lightweight~XDP~Dataplane on~your~Raspberry~Pi}
 
 \usepackage{orcidlink}
+
+\usepackage[some,bottom]{background}
 
 \newcommand{\subparagraph}{}
 \usepackage{titlesec}
@@ -179,7 +184,8 @@ Contextuals={Alternate}
 %\usepackage[T1]{fontenc}
 
 \title{\mytitle}
-\author{Kyle~A.~Simpson$^\dagger$$^\ddagger$~{\orcidlink{0000-0001-8068-9909}~\scriptsize[0000-0001-8068-9909]}, Chris~Williamson$^\dagger$~{\orcidlink{0000-0003-1108-9402}~\scriptsize[0000-0003-1108-9402]},\\Douglas~J.~Paul$^\dagger$~{\orcidlink{0000-0001-7402-8530}~\scriptsize[0000-0001-7402-8530]}, Dimitrios~P.~Pezaros$^\dagger$~{\orcidlink{0000-0003-0939-378X}~\scriptsize[0000-0003-0939-378X]}\\$^\dagger$\emph{University of Glasgow}, Glasgow, Scotland. $^\ddagger$\emph{Arista Networks}, Santa Clara, CA.\\\texttt{\email{kylesimpson1@acm.org}}}
+%\author{Kyle~A.~Simpson$^\dagger$$^\ddagger$~{\orcidlink{0000-0001-8068-9909}~\scriptsize[0000-0001-8068-9909]}, Chris~Williamson$^\dagger$~{\orcidlink{0000-0003-1108-9402}~\scriptsize[0000-0003-1108-9402]},\\Douglas~J.~Paul$^\dagger$~{\orcidlink{0000-0001-7402-8530}~\scriptsize[0000-0001-7402-8530]}, Dimitrios~P.~Pezaros$^\dagger$~{\orcidlink{0000-0003-0939-378X}~\scriptsize[0000-0003-0939-378X]}\\$^\dagger$\emph{University of Glasgow}, Glasgow, Scotland. $^\ddagger$\emph{Arista Networks}, Santa Clara, CA.\\\texttt{\email{kylesimpson1@acm.org}}}
+\author{Kyle~A.~Simpson~{\orcidlink{0000-0001-8068-9909}~\scriptsize[0000-0001-8068-9909]}, Chris~Williamson~{\orcidlink{0000-0003-1108-9402}~\scriptsize[0000-0003-1108-9402]},\\Douglas~J.~Paul~{\orcidlink{0000-0001-7402-8530}~\scriptsize[0000-0001-7402-8530]}, Dimitrios~P.~Pezaros~{\orcidlink{0000-0003-0939-378X}~\scriptsize[0000-0003-0939-378X]}\\\emph{University of Glasgow}, Glasgow, Scotland\\\texttt{\email{kylesimpson1@acm.org}}}
 %\author{Anonymous Authors\\\texttt{\email{name@domain.tld}}}
 
 \usepackage{blindtext}
@@ -220,6 +226,16 @@ Our API makes it easy to write network functions (NFs) which compile to both eBP
 Testbed evaluations show how this is more efficient, faster, and uses less power than \afp{} on Raspberry Pi.
 \end{abstract}
 
+%\begin{textblock}{50}(150,287)
+%	\noindent Text under bottom margin (below 2.5cm)
+%\end{textblock}
+
+\SetBgContents{\parbox{17cm}{\centering\copyright~IFIP, 2023. This is the author's version of the work. It is posted here by permission of IFIP for your personal use. Not for redistribution. The definitive version was published in the 22nd International IFIP TC6 Networking Conference, Networking 2023, Barcelona, Spain, June 12-15, 2023, \url{http://dx.doi.org/xx.xxxxx/yyy.yyyyyy.yyyyyyy}.}}
+\SetBgScale{1}
+\SetBgOpacity{1}
+\SetBgColor{black!90}
+\SetBgVshift{1cm}
+
 \section{Introduction}\label{sec:introduction}
 %?? Lead with the problem: need for installation of security fns etc.
 IoT and sensor networks---particularly legacy installations---are infamous for their (perceived) lack of security.
@@ -230,7 +246,7 @@ Yet when the sensor networks built on such abandoned components underpin critica
 this leaves administrators in the difficult position of having to pursue fleetwide device replacements.
 This can be prohibitively expensive---particularly if these vulnerable networks are physically remote.
 %This does not, however, make sensor networks built on such abandoned components any less critical; and wholesale replacement
-Ideally, we desire an inexpensive and dynamically reconfigurable way to retrofit security functions into such networks with a single up-front cost as the threat landscape evolves.
+Ideally, we desire an inexpensive and dynamically reconfigurable way to retrofit security functions into such networks with a single up-front cost as the threat landscape evolves.\BgThispage
 %?? Want a cheap, effective way to retrofit security, reconfig as exploits and new attacks arise
 %?? So, software dataplanes.
 
@@ -258,7 +274,6 @@ However, time-critical functionality like cybersecurity functions or network fau
 %?? arbitrary DP programming in-situ?
 This gives us scope to use SBC hardware as part of an in-situ `Goldilocks' solution, allowing administrators to choose a packet processing device with just the right size, cost, and power draw for a network's expected ingress/egress rates---without needing to steer traffic to an external cloud provider for scrubbing.
 This keeps latency---and thus the reaction time to adverse security events---as low as possible.
-
 %?? also running Linux
 
 %?? Somewhere -- benefits and sandboxing of eBPF (\cref{sec:background})?
