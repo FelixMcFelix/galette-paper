@@ -5,7 +5,7 @@
 %,notes=only
 %,notes
 %,show notes on second screen=right
-,handout
+%,handout
 ]{beamer}
 \usetheme[background=light, numbering=fraction]{metropolis}
 \usepackage{appendixnumberbeamer}
@@ -23,6 +23,7 @@ Contextuals={Alternate}
 \usemintedstyle{tango}
 
 \setminted[rust]{obeytabs=true,tabsize=2}
+\setminted[toml]{obeytabs=true,tabsize=2}
 
 \usepackage{twemojis}
 
@@ -171,7 +172,7 @@ Contextuals={Alternate}
 	\end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Securing Sensor \& IoT Networks}
+\begin{frame}{Securing Sensor \& IoT Gateway Networks}
 	\begin{columns}
 		\begin{column}{0.6\linewidth}
 %			\alert{A thing}: bright results!
@@ -188,6 +189,7 @@ Contextuals={Alternate}
 					\item But limited space + power in the field.
 					\item Physically vulnerable!
 				\end{itemize}
+			\item \emph{Sensor networks have low data rates! }
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.4\linewidth}
@@ -212,9 +214,8 @@ Contextuals={Alternate}
 				\begin{itemize}
 					\item See also: NUCs (££), Jetsons (£££).
 					\item \emph{Linux-based}: Easy(/ier) to target and write for. \alert{We also get kernel network stack advancements.}
-					\item Different CPU architectures.
+					\item \textbf{Different CPU architectures.}
 				\end{itemize}
-				\item Sensor networks have low data rates; a good fit.
 				\item Project goals:
 				\begin{itemize}
 					\item \alert{Fast!} Low-latency, quickly reconfigurable.
@@ -226,20 +227,24 @@ Contextuals={Alternate}
 \end{frame}
 
 \begin{frame}{\ourtech{}'s Research Objectives}
+	\alert{\textbf{\emph{\ourtech{}}} puts \textbf{effective} eBPF packet processing into \textbf{edge computers}.}
+	
 	\begin{enumerate}
-		\item What specialisations does XDP Function Chaining need to best suit SBCs?
-		\begin{itemize}
-			\item `Acceptably' low-latency packet-processing, without pushing CPU/power draw too high?
+		\item What \emph{specialisations} does XDP Function Chaining need to \emph{best suit SBCs}?
+		\begin{itemize}[<+->]
+			\item Split userland-XDP pipeline.
+			\item \alert{Many userland pipes!}
 		\end{itemize}
 		\item How do we make eBPF + native compile from memory-safe systems languages easy? And portable across `native'?
-		\begin{itemize}
-			\item One Rust program per NF $\implies$ compiles to eBPF + \mintinline{bash}|$PLATFORM|.
+		\begin{itemize}[<+->]
+			\item \alert{One Rust program per NF} $\implies$ eBPF + native.
+			\item Easier, unified API.
 			\item Simple, dynamic chain format.
-			\item Fast reconfiguration.
 		\end{itemize}
-		\item How much better is it [power, perf, lat]?
-		\begin{itemize}
-			\item With/without polling.
+		\item How efficient is it on RPi/NUC?
+		\begin{itemize}[<+->]
+			\item Better latency, throughout, power use than \afp{}...
+			\item \alert{\textbf{...without polling.}}
 		\end{itemize}
 	\end{enumerate}
 %	\begin{itemize}
@@ -267,21 +272,21 @@ Contextuals={Alternate}
 
 \section{Background}
 
-\begin{frame}{Limits of existing SFC}
-	\begin{itemize}
-		\item `Best' low latency processing (DPDK) is \alert{expensive} -- CPU and power.
-		\begin{itemize}
-			\item ...IFF you have HW support (NUCs)
-		\end{itemize}
-%		\item SotA in \emph{secure} processing needs server-only capabilities like \emph{trusted execution environments} (TEEs).
-		\item No powerful hardware offloads or acceleration.
-		\begin{itemize}
-			\item FPGA hats/daughterboards \alert{`off-path'}
-		\end{itemize}
-		\item Devices physically vulnerable, \alert{no ECC memory}.
-		\item ...So, how to reconcile with cheap \& portable SBCs?
-	\end{itemize}
-\end{frame}
+%\begin{frame}{Limits of existing SFC}
+%	\begin{itemize}
+%		\item `Best' low latency processing (DPDK) is \alert{expensive} -- CPU and power.
+%		\begin{itemize}
+%			\item ...IFF you have HW support (NUCs)
+%		\end{itemize}
+%%		\item SotA in \emph{secure} processing needs server-only capabilities like \emph{trusted execution environments} (TEEs).
+%		\item No powerful hardware offloads or acceleration.
+%		\begin{itemize}
+%			\item FPGA hats/daughterboards \alert{`off-path'}
+%		\end{itemize}
+%		\item Devices physically vulnerable, \alert{no ECC memory}.
+%		\item ...So, how to reconcile with cheap \& portable SBCs?
+%	\end{itemize}
+%\end{frame}
 
 %\begin{frame}{What tools do we \emph{consistently} have?}
 %	\begin{itemize}
@@ -389,24 +394,24 @@ Contextuals={Alternate}
 	\end{columns}
 \end{frame}
 
-\section{Q1: Specialising \afxdp{} SFC to SBCs}
+\section{Q1: Specialising \afxdp{} Function Chaining for SBCs}
 
-\begin{frame}{Concrete design differences}
+\begin{frame}{The Unique Challenges of SBCs}
 	\begin{itemize}
+		\item \textbf{Problem:} `Best' low latency processing (DPDK) is \alert{expensive} -- CPU, power, \emph{HW support}.
 		\item \textbf{Problem:} Mismatch of HW queues to physical cores:
-		\begin{itemize}
-			\item \alert{Soln:} load balance or place high-latency NFs in userland.
-			\item ...also, don't pass packets back to k-space.
+		\begin{itemize}[<+->]
+			\item \alert{Soln:} load balance and place high-latency NFs in userland.
+			\item ...also, don't pass packets back to kernel-space.
 		\end{itemize}
 		\item \textbf{Problem:} XDP hooks only on ingress (\emph{for now}):
-		\begin{itemize}
-			\item \alert{Soln:} load balance or place high-latency NFs in userland?
-			\item Write an individual NF \emph{once}, compile for both envs, and replicate NFs as needed.
+		\begin{itemize}[<+->]
+			\item \alert{Soln:} Write an individual NF \emph{once}, compile for both envs, and replicate NFs as needed.
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Design: Bird's eye view}
+\begin{frame}{\ourtech{} Design: Bird's eye view}
 	\begin{columns}
 		\begin{column}{0.5\linewidth}
 			\begin{figure}
@@ -420,7 +425,8 @@ Contextuals={Alternate}
 				\item Composable NFs -- graph structure.
 				\item Critical or high performance NFs go into XDP:
 				\begin{itemize}
-					\item Early results -- \alert{low latency for most packets}.
+					\item \alert{Low latency for most packets}.
+					\item Chain with XDP tail calls.
 				\end{itemize}
 				\item Rare `slow-path' still kernel bypass:
 				\begin{itemize}
@@ -428,6 +434,7 @@ Contextuals={Alternate}
 					\item Only for candidate attack traffic.
 				\end{itemize}
 				\item Reconfigurable, dynamic.
+				\item \alert{Remote-compiled.}
 			\end{itemize}
 		\end{column}
 	\end{columns}
@@ -442,18 +449,32 @@ Contextuals={Alternate}
 	\textbf{In eBPF/XDP space?} Polycube~\footcite{DBLP:journals/tnsm/MianoRBBL21}!
 	\begin{itemize}
 		\item Built around datacentres -- we often have just one HW queue for a NIC.
+		\item \alert{...so we use more userland pipes to scale to the extra cores we \emph{do} have.}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{How do we upcall to userland?}
-	\begin{itemize}
-		\item \textbf{Problem:} Can send packet over \texttt{AF\_XDP}, but \emph{no context on what the next (callee) NF is}.
-		\begin{itemize}
-			\item Polycube's solution inadequate: one discrete userland component per \emph{cube}.
-		\end{itemize}
-		\item \alert{Soln:} Adjust headroom of packets, write in ID and action of caller.
-		\item ...might be a \texttt{memcpy}, but ideally only paid on packets who need it.
-	\end{itemize}
+	\begin{columns}
+		\begin{column}{0.5\linewidth}
+			\begin{itemize}
+				\item \textbf{Problem:} Can send packet over \texttt{AF\_XDP}, but \emph{no context on what the next (callee) NF is}.
+				\begin{itemize}
+					\item Polycube's solution inadequate: one discrete userland component per \emph{cube}.
+				\end{itemize}
+				\item \alert{Soln:} Adjust headroom of packets, write in ID and action of caller.
+%				\item ...might be a \texttt{memcpy}, but ideally only paid on packets who need it -- dpolier??there isn't.
+%				\item ?? Diagram from paper here?
+				
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\linewidth}
+			\begin{figure}
+				\centering
+				\resizebox{0.9\linewidth}{!}{\input{diagrams/dplane-user}}
+				\caption{Packet processing in the XDP Fast Path (NF maps omitted).\label{fig:dplane-xdp}}
+			\end{figure}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \section{Q2: Easy Joint-Compile (eBPF + Native) from Rust \twemoji{crab}}
@@ -478,42 +499,128 @@ Contextuals={Alternate}
 		\end{column}
 		\begin{column}{0.5\linewidth}
 			\centering
-			\begin{minted}[fontsize={\fontsize{5.5}{6.5}\selectfont}]{rust}
-#![no_std]
-pub enum Action {
-	Left,
-	Right,
-	Up,
-	Down,
-}
-				
-pub fn packet(bytes: impl Packet) -> Action {
-	let addr_lsb_idx = 14 +
-	match pkt.slice_from(12, 2) {
-		Some(&[0x08, 0x00]) => 19, //v4
-		Some(&[0x86, 0xDD]) => 39, //v6
-		_ => {return Action::Left},
-	};
-	
-	match pkt.slice_from(addr_lsb_idx, 1)
-		.map(|v| v[0] % 2) {
-			Some(0) => Action::Left,
-			Some(1) => Action::Right,
-			Some(2) => Action::Up,
-			Some(3) => Action::Down,
-			_ => unreachable!(),
-	}
-}
-			\end{minted}
-			\textbf{\texttt{mod.rs}: Load balance on dest addr}
+%			\begin{minted}[fontsize={\fontsize{5.5}{6.5}\selectfont}]{rust}
+%#![no_std]
+%pub enum Action {
+%	Left,
+%	Right,
+%	Up,
+%	Down,
+%}
+%				
+%pub fn packet(bytes: impl Packet) -> Action {
+%	let addr_lsb_idx = 14 +
+%	match pkt.slice_from(12, 2) {
+%		Some(&[0x08, 0x00]) => 19, //v4
+%		Some(&[0x86, 0xDD]) => 39, //v6
+%		_ => {return Action::Left},
+%	};
+%	
+%	match pkt.slice_from(addr_lsb_idx, 1)
+%		.map(|v| v[0] % 2) {
+%			Some(0) => Action::Left,
+%			Some(1) => Action::Right,
+%			Some(2) => Action::Up,
+%			Some(3) => Action::Down,
+%			_ => unreachable!(),
+%	}
+%}
+%			\end{minted}
+\inputminted[fontsize={\fontsize{5.5}{6.5}\selectfont}]{rust}{listings/macswap.rs}
+			\textbf{\texttt{mod.rs}: A counting macswap function}
 		\end{column}
 	\end{columns}
 \end{frame}
 
-\begin{frame}{?? Chain example}
-	\centering
-	\textbf{\alert{< In lieu of a demo... >}}
+\begin{frame}[fragile=singleslide]{A Service Funtion Chain: \texttt{security.toml}}
+	\begin{columns}
+		\begin{column}{0.5\linewidth}
+			\begin{minted}[fontsize={\fontsize{7.5}{8.5}\selectfont}]{toml}
+				# -- NF & Map definitions --
+				[functions.access-control.maps]
+				allow-list = {
+					type = "lpm-trie",
+					size = 65535
+				}
+				
+				[functions.weak-classifier]
+				maps = { flow-state = "_" }
+				
+				[functions.dpi]
+				maps = { flow-state = "_" }
+				disable_xdp = true
+				
+				[maps.flow-state]
+				type = "hash_map"
+				size = 65535
+			\end{minted}
+		\end{column}
+		\begin{column}{0.5\linewidth}
+			\begin{minted}[fontsize={\fontsize{7.5}{8.5}\selectfont}]{toml}
+				# -- Chain definition --
+				[[links]]
+				from = "rx"
+				to = ["access-control"]
+				
+				[[links]]
+				from = "access-control"
+				to = ["tx", "weak-classifier"]
+				
+				[[links]]
+				from = "weak-classifier"
+				to = ["tx", "!dpi", "drop"]
+				
+				[[links]]
+				from = "dpi"
+				to = ["tx", "drop"]
+			\end{minted}
+		\end{column}
+	\end{columns}
 \end{frame}
+
+\begin{frame}[fragile=singleslide]{A Peek Behind The Curtain }
+	\begin{columns}
+		\begin{column}{0.5\linewidth}
+			\begin{minted}[fontsize={\fontsize{8.5}{9.5}\selectfont}]{rust}
+pub struct PodData {
+	pub a: u8,
+	pub b: bool,
+	pub c: u64,
+}
+
+#[maps]
+pub struct TestMaps {
+	plain: (u32, u64),
+	composite: (u32, PodData),
+}
+			\end{minted}
+		\end{column}
+			\hspace{-9em}$\bm\implies$\hspace{2em}
+		\begin{column}{0.45\linewidth}
+			\begin{minted}[fontsize={\fontsize{7.5}{8.5}\selectfont}]{rust}
+pub type NfKeyTy0 = u32;
+pub type NfKeyTy1 = u32;
+pub type NfValTy0 = u64;
+pub type NfValTy1 = PodData;
+
+pub struct TestMaps<NfMapField0, NfMapField1>
+where
+	NfMapField0: Map<u32, u64>,
+	NfMapField1: Map<u32, PodData>,
+{
+	pub plain: NfMapField0,
+	pub composite: NfMapField1,
+}
+			\end{minted}
+		\end{column}
+	\end{columns}
+	And templating code parses any \mintinline{rust}|struct|s tagged \mintinline{rust}|#[maps]| to count \& \emph{generate output crates!}
+\end{frame}
+
+%\begin{frame}{A Peek Behind The Curtain (II)}
+%	content...
+%\end{frame}
+
 
 %\begin{frame}{Methodology (I): Low-latency XDP fast-path}
 %	\begin{columns}
@@ -587,23 +694,74 @@ pub fn packet(bytes: impl Packet) -> Action {
 \section{Q3: Performance}
 
 \begin{frame}{Setup}
-	?? Baselines
-	
-	?? What Machines
-	
-	?? Waht NFs.
-	
-	?? WHy
+	\begin{columns}
+		\begin{column}{0.5\linewidth}
+			\textbf{Baselines}\\
+			
+			\vspace{1em}
+			{\centering
+			\resizebox{0.7\linewidth}{!}{\begin{tabular}{cc}
+				\toprule
+				Non-Polling&Polling\\
+				\midrule
+				\ourtech{} (XDP)&\ourtech{} (all)\\
+				\ourtech{} (\afxdp)&\afp{}\\
+				\ourtech{} (Split)&DPDK (NUC)\\
+				\bottomrule
+			\end{tabular}}}
+			\vspace{1em}
+			
+			\textbf{Machines}
+			\begin{itemize}
+				\item Raspberry Pi Model 3B (\qty{100}{\mega\bit\per\second}),
+				\item Intel i7 NUCs (\qty{1}{\giga\bit\per\second}).
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\linewidth}
+			\textbf{NFs}
+			\begin{itemize}
+				\item Macswap,
+				\item Blocking workloads ($\le$\qty{1}{\milli\second}).
+			\end{itemize}
+		
+			\textbf{Why?}
+			\begin{itemize}
+				\item Power Draw on Pi, Latency/Throughput for all.
+				\item Different architectures.
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}{?? Results?}
-	content...
-\end{frame}
+%\begin{frame}{?? Results?}
+%	content...
+%\end{frame}
 
-\begin{frame}{High-level}
-	?? better at these things
-	
-	If you want more detailed data, please check out our paper
+\begin{frame}{High-level Results}
+	\begin{columns}
+		\begin{column}{0.5\linewidth}
+			\begin{itemize}
+				\item Pure XDP \& \afxdp{} more CPU-efficient than polling baselines (line-rate on NUC).
+				\item On RPi? Better than \afp{} on all metrics \alert{without polling}.
+				\begin{itemize}
+					\item Limited by fused Eth+USB controller.
+				\end{itemize}
+				\item XDP-Userland split prevents packet stalls with (conditionally) heavy chains.
+				\begin{itemize}
+					\item Limited by fused Eth+USB controller.
+				\end{itemize}
+			\end{itemize}
+		More detail? \alert{Please check out our paper!}
+		\end{column}
+		\begin{column}{0.5\linewidth}
+			\begin{figure}
+				\centering
+				\includegraphics[keepaspectratio,width=0.9\linewidth]{../plots/build/latency-vs-baselines/rpi-64B-trimlog-new}
+				\caption{\emph{RPi} \qty{64}{\byte} packet latencies.\label{fig:lat-rpi}}
+			\end{figure}
+		\end{column}
+	\end{columns}
+
 \end{frame}
 
 %\begin{frame}{...What's next?}
@@ -625,12 +783,14 @@ pub fn packet(bytes: impl Packet) -> Action {
 \begin{frame}[standout]
 	Takeaways:
 	\begin{itemize}
-		\item \alert{Cheap NFs}: SBCs for packet processing.
+		\item \alert{Cheap NFs at the edge}: SBCs for packet processing.
 		\item \alert{Low-latency and fast}: XDP path for majority of traffic, early \& cheap anomaly checks, power savings.
-		\item \alert{Secure}: PUFs for device, server, and function chain attestation.
+		\item \alert{Secure}: Rust NFs means memory safety \emph{and} performant.
 		\item \alert{Easy to write}: \emph{native and XDP} portable NFs in Rust.
 %		\item \emph{Ongoing work}: complex NFs, power + latency measures, better characterising PUF behaviour.
 	\end{itemize}
+	
+	\vspace{2em}
 	\alert{Questions?}\\
 	{
 		\scriptsize
